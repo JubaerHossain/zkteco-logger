@@ -181,6 +181,14 @@ For Linux/macOS:
 
 ```bash
 pyinstaller --onefile --add-data "configs/devices.json:configs" --add-data "logs:logs" src/main.py
+
+
+for run PyInstaller via Wine on Linux or macOS, use the following command:
+```bash
+wine python -m PyInstaller --onefile \
+  --add-data "configs/devices.json;configs" \
+  --add-data "logs;logs" \
+  src/main.py
 ```
 
 The executable will be located in the `dist/` folder.
