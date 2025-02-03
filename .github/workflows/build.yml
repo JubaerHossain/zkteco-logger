@@ -1,4 +1,4 @@
-name: Build ZKTeco Logger
+name: ZKTeco Logger
 
 on:
   push:
