@@ -1,0 +1,61 @@
+name: Build ZKTeco Logger
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install -r src/requirements.txt
+      - name: Build with PyInstaller
+        run: pyinstaller --onefile --add-data "configs/devices.json;configs" --add-data "logs;logs" src/main.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: zkteco_logger_windows
+          path: dist/main.exe
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install -r src/requirements.txt
+      - name: Build with PyInstaller
+        run: pyinstaller --onefile --add-data "configs/devices.json:configs" --add-data "logs:logs" src/main.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: zkteco_logger_linux
+          path: dist/main
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install -r src/requirements.txt
+      - name: Build with PyInstaller
+        run: pyinstaller --onefile --add-data "configs/devices.json:configs" --add-data "logs:logs" src/main.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: zkteco_logger_macos
+          path: dist/main
