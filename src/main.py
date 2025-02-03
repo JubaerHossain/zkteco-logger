@@ -7,14 +7,25 @@ import sys
 import threading
 import time
 from datetime import datetime
-
 import requests
 from zk import ZK
 from zk.attendance import Attendance
 
-# Set up logging
-log_dir = 'logs'
+# Helper function to determine the base path dynamically
+def get_base_path():
+    """Determine the base path for the application."""
+    if getattr(sys, 'frozen', False):
+        # If the app is frozen (bundled by PyInstaller)
+        return sys._MEIPASS
+    else:
+        # If running as a script
+        return os.path.dirname(os.path.abspath(__file__))
+
+# Set up logging with dynamic paths
+log_dir = os.path.join(get_base_path(), "logs")
 os.makedirs(log_dir, exist_ok=True)
+
+# Configure logging to reduce I/O overhead
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -24,6 +35,8 @@ logging.basicConfig(
     ]
 )
 
+# Load API URL from environment variable or use default
+ATTENDANCE_API_URL = os.getenv("ATTENDANCE_API_URL", "http://127.0.0.1:8000/api/attendances")
 
 class ZKTecoDevice:
     def __init__(self, device_data):
@@ -34,7 +47,7 @@ class ZKTecoDevice:
         self.password = device_data['password']
         self.zk = None
         self.conn = None
-        self.failed_logs_file = os.path.join("logs", "failed_logs.json")
+        self.failed_logs_file = os.path.join(log_dir, "failed_logs.json")  # Dynamic path for failed logs
         self.device_logs = {}
         self.lock = threading.Lock()
 
@@ -94,7 +107,6 @@ class ZKTecoDevice:
     def send_log_to_api(self, log):
         """Send a log entry to the API."""
         try:
-            url = "http://127.0.0.1:8000/api/attendances"
             headers = {
                 "Content-Type": "application/json",
             }
@@ -106,7 +118,7 @@ class ZKTecoDevice:
             }
 
             # Sending the POST request to the API
-            response = requests.post(url, json=data, headers=headers)
+            response = requests.post(ATTENDANCE_API_URL, json=data, headers=headers, timeout=5)
             if response.status_code == 200:
                 logging.info(f"Successfully sent log to API: {log.timestamp}")
                 return True
@@ -178,7 +190,8 @@ class ZKTecoDevice:
 def load_devices():
     """Load device configurations from a JSON file."""
     try:
-        with open('configs/devices.json', 'r') as f:
+        config_path = os.path.join(get_base_path(), "configs", "devices.json")
+        with open(config_path, 'r') as f:
             return json.load(f)
     except Exception as e:
         logging.error(f"Load devices error: {e}")
@@ -188,7 +201,9 @@ def load_devices():
 def save_devices(devices):
     """Save device configurations to a JSON file."""
     try:
-        with open('configs/devices.json', 'w') as f:
+        config_path = os.path.join(get_base_path(), "configs", "devices.json")
+        os.makedirs(os.path.dirname(config_path), exist_ok=True)  # Ensure the directory exists
+        with open(config_path, 'w') as f:
             json.dump(devices, f, indent=4)
     except Exception as e:
         logging.error(f"Save devices error: {e}")
@@ -197,6 +212,8 @@ def save_devices(devices):
 def graceful_shutdown(signal, frame):
     """Handle graceful shutdown."""
     logging.info("Shutting down gracefully...")
+    for device in active_devices:
+        device.disconnect()
     sys.exit(0)
 
 
@@ -285,6 +302,7 @@ if __name__ == "__main__":
     for device in active_devices:
         device.connect()
 
+    # Start threads for live logs
     for device in active_devices:
         thread = threading.Thread(target=device.get_live_logs, daemon=True)
         thread.start()

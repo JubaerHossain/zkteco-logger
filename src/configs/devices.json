@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "ip": "192.168.1.204",
+        "name": "Device 1",
+        "status": "Connected",
+        "password": "123456",
+        "zk" : {
+            "port": 4370
+        }
+    }
+  ]
