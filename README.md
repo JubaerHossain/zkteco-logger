@@ -1,4 +1,4 @@
-# ZKTeco Logger
+# ZKTeco Logger and Attendance System
 
 The **ZKTeco Logger** is a Python-based console application designed to connect to ZKTeco biometric devices, capture live attendance logs, and send them to a REST API. It also includes features for retrying failed log submissions and supports multiple platforms (Windows, Linux, macOS).
 
