@@ -57,7 +57,7 @@ cd zkteco-logger
 Install the required Python packages:
 
 ```bash
-pip install -r src/requirements.txt
+pip install -r requirements.txt
 ```
 
 ---
