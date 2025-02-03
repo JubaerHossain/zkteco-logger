@@ -1,5 +1,2 @@
-2025-02-03 11:56:53,384 - ERROR - Connection error Device 1: timed out
-2025-02-03 11:56:53,765 - INFO - Connected to Device 1 (192.168.1.204)
-2025-02-03 11:57:44,574 - INFO - Successfully sent log to API: 2025-02-03 11:53:35
-2025-02-03 11:58:09,713 - INFO - Successfully sent log to API: 2025-02-03 11:54:01
-2025-02-03 11:59:47,888 - INFO - Shutting down gracefully...
+2025-02-03 12:08:41,492 - INFO - Connected to Device 1 (192.168.1.204)
+2025-02-03 12:08:58,771 - INFO - Successfully sent log to API: 2025-02-03 12:04:50
