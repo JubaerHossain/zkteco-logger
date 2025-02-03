@@ -181,6 +181,7 @@ For Linux/macOS:
 
 ```bash
 pyinstaller --onefile --add-data "configs/devices.json:configs" --add-data "logs:logs" src/main.py
+```
 
 
 for run PyInstaller via Wine on Linux or macOS, use the following command:
