@@ -192,6 +192,14 @@ wine python -m PyInstaller --onefile \
   src/main.py
 ```
 
+```bash
+pyinstaller --onefile --windowed --name="ZKTecoLogger" \
+    --add-data "configs/devices.json;configs" \
+    --add-data "logs;logs" \
+    --exclude-module "tkinter" \
+    src/main.py
+```
+
 The executable will be located in the `dist/` folder.
 
 ---
