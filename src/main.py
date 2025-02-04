@@ -54,7 +54,7 @@ class ZKTecoDevice:
     def connect(self):
         """Attempt to connect to the ZKTeco device."""
         try:
-            self.zk = ZK(self.ip, port=4370, timeout=5, password=self.password, force_udp=False, ommit_ping=True)
+            self.zk = ZK(self.ip, port=4370, timeout=90, password=self.password, force_udp=False, ommit_ping=True)
             self.conn = self.zk.connect()
             self.status = "Connected"
             logging.info(f"Connected to {self.name} ({self.ip})")
@@ -107,6 +107,8 @@ class ZKTecoDevice:
     def send_log_to_api(self, log):
         """Send a log entry to the API."""
         try:
+            print(log.timestamp.strftime("%Y-%m-%d %H:%M:%S"))
+            print(log.user_id)
             headers = {
                 "Content-Type": "application/json",
             }
